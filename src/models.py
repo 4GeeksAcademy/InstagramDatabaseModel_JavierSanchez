@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 import os
 import sys
@@ -19,6 +19,10 @@ class User(db.Model):
     created_date: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+
+    # Non column properties
+    followers = relationship("Follower", foreign_keys="Follower.user_to_id", backref="followed_user")
+    following = relationship("Follower", foreign_keys="Follower.user_from_id", backref="follower_user")
 
     def serialize(self):
         return {
